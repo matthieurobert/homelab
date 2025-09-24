@@ -31,12 +31,36 @@ resource "proxmox_virtual_environment_file" "docker_cloud_config" {
     timezone: Europe/Paris
     runcmd:
         - apt update
-        - apt install -y qemu-guest-agent net-tools curl
+        - apt install -y qemu-guest-agent net-tools curl linux-modules-extra-$(uname -r)
         - systemctl enable qemu-guest-agent
         - systemctl start qemu-guest-agent
         - echo "done" > /tmp/cloud-config.done
         - curl -fsSL https://get.docker.com -o get-docker.sh
         - sh get-docker.sh
+        - mkdir -p /home/ubuntu/portainer
+        - |
+          cat > /home/ubuntu/portainer/docker-compose.yml << 'EOL'
+          services:
+            portainer:
+              image: portainer/portainer-ce:latest
+              container_name: portainer
+              restart: unless-stopped
+              ports:
+                - "9000:9000"
+                - "9443:9443"
+              volumes:
+                - /var/run/docker.sock:/var/run/docker.sock
+                - portainer_data:/data
+              security_opt:
+                - no-new-privileges:true
+          
+          volumes:
+            portainer_data:
+          EOL
+        - chown -R ubuntu:ubuntu /home/ubuntu/portainer
+        - cd /home/ubuntu/portainer && sudo docker compose -p portainer up -d
+        - sudo modprobe ch341
+        - sudo reboot
     EOF
 
     file_name = "${var.project_name}-cloud-config.yaml"
@@ -59,12 +83,17 @@ resource "proxmox_virtual_environment_vm" "docker" {
   agent {
     enabled = true
   }
+
   disk {
     interface = "virtio0"
     datastore_id = var.vm_datastore_id
     file_id = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
     file_format = "raw"
     size = var.docker_instance.disk
+  }
+
+  usb {
+    host = "1a86:55d4"
   }
 
   network_device {
