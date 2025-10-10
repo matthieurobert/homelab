@@ -29,6 +29,9 @@ resource "k0sctl_config" "k0sctl" {
         spec = {
           network = {
             provider = "custom"
+            kubeProxy = {
+              disabled = true
+            }
           }
           telemetry = {
             enabled = false
@@ -53,6 +56,11 @@ resource "k0sctl_config" "k0sctl" {
                 chartname = "cilium/cilium"
                 version = "1.18.2"
                 namespace = "kube-system"
+                values = <<EOT
+                  kubeProxyReplacement: true
+                  k8sServiceHost: "${var.instances[0].ip}"
+                  k8sServicePort: 6443
+                EOT
               }]
             }
           }
