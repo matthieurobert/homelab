@@ -30,12 +30,12 @@ variable "datastore_id" {
 
 variable "pve_vm_datastore_id" {
   type = string
-  default = "zfs"
+  default = "local-lvm"
 }
 
 variable "pve2_vm_datastore_id" {
   type = string
-  default = "samsung-ssds"
+  default = "local-lvm"
 }
 
 variable "pve_instances" {
