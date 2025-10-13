@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 8.3.6
+    helm:
+      valuesObject:
+        server:
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hostname: argocd.kome.mrobert.fr
+            tls: false
+            extraTls:
+            - hosts:
+              - argocd.kome.mrobert.fr
+              secretName: argocd.kome.mrobert.fr-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+              # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        configs:
+          cm:
+            accounts.readonly: apiKey
+          rbac:
+            policy.csv: "g, readonly, role:readonly"
+  syncPolicy:
+    automated: {}

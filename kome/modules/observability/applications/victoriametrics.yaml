@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vmks
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  destination:
+    namespace: victoriametrics
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://victoriametrics.github.io/helm-charts
+    chart: victoria-metrics-k8s-stack
+    targetRevision: 0.60.1
+    helm:
+      valuesObject:
+        grafana:
+          enabled: false
+          forceDeployDatasource: true
+        defaultDashboards:
+          grafanaOperator:
+            enabled: true
+            spec:
+              allowCrossNamespaceImport: true
+        defaultDatasources:
+          grafanaOperator:
+            enabled: true
+            spec:
+              allowCrossNamespaceImport: true
+        kubeEtcd:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+  syncPolicy:
+    # automated: {}
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: vmks-victoria-metrics-operator-validation
+      namespace: victoriametrics
+      jsonPointers:
+        - /data
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: vmks-victoria-metrics-operator-admission
+      jqPathExpressions:
+      - '.webhooks[]?.clientConfig.caBundle'

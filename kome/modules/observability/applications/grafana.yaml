@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  destination:
+    namespace: grafana
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: modules/observability/manifests/grafana
+    repoURL: https://github.com/matthieurobert/homelab.git
+    targetRevision: main
+  syncPolicy:
+    automated: {}

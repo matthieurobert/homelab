@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: coffee-mrobert-fr-wildcard
+  namespace: vault
+spec:
+  secretName: coffee-mrobert-fr-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: "*.kome.mrobert.fr"
+  dnsNames:
+    - "kome.mrobert.fr"
+    - "*.kome.mrobert.fr"

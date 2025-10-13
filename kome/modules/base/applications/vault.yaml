@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  destination:
+    namespace: vault
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: modules/base/manifests/vault
+    repoURL: https://github.com/matthieurobert/homelab.git
+    targetRevision: main
+  syncPolicy:
+    automated: {}
