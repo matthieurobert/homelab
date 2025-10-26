@@ -11,5 +11,5 @@ spec:
     group: cert-manager.io
   commonName: "*.datalab.mrobert.fr"
   dnsNames:
-    - ".mrobert.fr"
+    - "datalab.mrobert.fr"
     - "*.datalab.mrobert.fr"
