@@ -16,6 +16,8 @@ spec:
       valuesObject:
         existingConfigSecret: proxmox-csi-plugin
 
+        node:
+          kubeletDir: /var/lib/k0s/kubelet
         # Define the storage classes
         storageClass:
           - name: proxmox-zfs-xfs
