@@ -35,9 +35,9 @@ spec:
               consumerKeyRef:
                 name: ovh-api
                 key: consumer_key
-  - path: modules/base/manifests/cert-manager-ovh
-    repoURL: https://github.com/matthieurobert/homelab.git
-    targetRevision: main
+  # - path: modules/base/manifests/cert-manager-ovh
+  #   repoURL: https://github.com/matthieurobert/homelab.git
+  #   targetRevision: main
   syncPolicy:
     automated: {}
     syncOptions:

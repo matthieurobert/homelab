@@ -18,9 +18,6 @@ spec:
       valuesObject:
         controller:
           replicaCount: 1
-          service:
-            type: LoadBalancer
-            loadBalancerClass: tailscale
           ingressClassResource:
             default: true
   syncPolicy:
