@@ -13,10 +13,10 @@ spec:
   sources:
   - chart: cert-manager-webhook-ovh
     repoURL: https://aureq.github.io/cert-manager-webhook-ovh
-    targetRevision: 0.7.3
+    targetRevision: 0.8.1-alpha.0
     helm:
       valuesObject:
-        configVersion: 0.0.1
+        configVersion: 0.0.2
         groupName: acme.mrobert.fr
         issuers:
           - name: letsencrypt-prod
@@ -25,6 +25,7 @@ spec:
             acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
             email: matthieurobert82@gmail.com
             ovhEndpointName: ovh-eu
+            ovhAuthenticationMethod: application
             ovhAuthenticationRef:
               applicationKeyRef:
                 name: ovh-api
@@ -32,7 +33,7 @@ spec:
               applicationSecretRef:
                 name: ovh-api
                 key: application_secret
-              consumerKeyRef:
+              applicationConsumerKeyRef:
                 name: ovh-api
                 key: consumer_key
   # - path: modules/base/manifests/cert-manager-ovh
