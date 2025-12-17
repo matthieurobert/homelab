@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: modules/
+    path: kome/modules/
     repoURL: https://github.com/matthieurobert/homelab.git
     targetRevision: main
     directory:
