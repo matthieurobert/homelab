@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: modules/base/manifests/keycloak
+    path: kome/modules/base/manifests/keycloak
     repoURL: https://github.com/matthieurobert/homelab.git
     targetRevision: main
   syncPolicy:
