@@ -27,6 +27,7 @@ resource "proxmox_virtual_environment_role" "csi" {
   role_id = "csi"
 
   privileges = [
+    "Sys.Audit",
     "VM.Audit",
     "VM.Config.Disk",
     "Datastore.Allocate",
@@ -43,7 +44,7 @@ resource "proxmox_virtual_environment_user" "kubernetes-csi" {
   }
 
   comment  = "Managed by Terraform"
-  user_id  = "kubernetes-csi@pve2"
+  user_id  = "kubernetes-csi@pve"
 }
 
 resource "proxmox_virtual_environment_user_token" "csi" {
