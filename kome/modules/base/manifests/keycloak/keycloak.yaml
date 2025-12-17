@@ -8,14 +8,14 @@ spec:
     vendor: postgres
     host: keycloak-cluster-rw
     usernameSecret:
-      name: keycloak-cnpg
+      name: keycloak-cluster-app
       key: username
     passwordSecret:
-      name: keycloak-cnpg
+      name: keycloak-cluster-app
       key: password
-  bootstrapAdmin:
-    user:
-      secret: keycloak-admin
+  # bootstrapAdmin:
+  #   user:
+  #     secret: keycloak-admin
   http:
     httpEnabled: true
   hostname:
