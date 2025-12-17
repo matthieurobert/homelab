@@ -1,16 +1,9 @@
-variable "proxmox_host_1" {
+variable "proxmox_host" {
   type = string
-  default = "192.168.1.50"
-}
-
-variable "proxmox_host_2" {
-  type = string
-  default = "192.168.1.99"
 }
 
 variable "state_host" {
   type = string
-  default = ""
 }
 
 variable "github_user" {
@@ -33,11 +26,6 @@ variable "pve_vm_datastore_id" {
   default = "local-lvm"
 }
 
-variable "pve2_vm_datastore_id" {
-  type = string
-  default = "local-lvm"
-}
-
 variable "pve_instances" {
   type = list(object({
     name = string
@@ -52,38 +40,13 @@ variable "pve_instances" {
   default = [
     {
       name = "kome-1"
-      node = "pve"
+      node = "pve2"
       tags = [ "kome" ,"kubernetes", "terraform" ]
       cpu = 4
-      memory = 8192
+      memory = 12288
       disk = 100
       ipv4 = "dhcp"
       ipv6 = "dhcp"
     },
-  ]
-}
-
-variable "pve2_instances" {
-  type = list(object({
-    name = string
-    node = string
-    tags = list(string)
-    cpu = number
-    memory = number
-    disk = number
-    ipv4 = string
-    ipv6 = string
-  }))  
-  default = [
-    {
-      name = "kome-2"
-      node = "pve2"
-      tags = [ "kome" ,"kubernetes", "terraform" ]
-      cpu = 4
-      memory = 8192
-      disk = 100
-      ipv4 = "dhcp"
-      ipv6 = "dhcp"
-    }
   ]
 }

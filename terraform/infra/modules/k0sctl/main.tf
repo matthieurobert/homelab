@@ -27,12 +27,6 @@ resource "k0sctl_config" "k0sctl" {
           name = var.project_name
         }
         spec = {
-          network = {
-            provider = "custom"
-            kubeProxy = {
-              disabled = true
-            }
-          }
           telemetry = {
             enabled = false
           }
@@ -41,26 +35,12 @@ resource "k0sctl_config" "k0sctl" {
               repositories = [{
                 name = "argocd"
                 url = "https://argoproj.github.io/argo-helm"
-              }, {
-                name = "cilium"
-                url = "https://helm.cilium.io/"
               }]
               charts = [{
                 name = "argocd"
                 chartname = "argocd/argo-cd"
-                version = "7.7.16"
+                version = "9.1.8"
                 namespace = "argocd"
-              },
-              {
-                name = "cilium"
-                chartname = "cilium/cilium"
-                version = "1.18.2"
-                namespace = "kube-system"
-                values = <<EOT
-                  kubeProxyReplacement: true
-                  k8sServiceHost: "${var.instances[0].ip}"
-                  k8sServicePort: 6443
-                EOT
               }]
             }
           }

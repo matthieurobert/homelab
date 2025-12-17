@@ -15,17 +15,7 @@ terraform {
 }
 
 provider "proxmox" {
-  alias = "pve"
-  endpoint = "https://${var.proxmox_host_1}:8006/"
-  insecure = true
-  ssh {
-    agent = true
-  }
-}
-
-provider "proxmox" {
-  alias = "pve2"
-  endpoint = "https://${var.proxmox_host_2}:8006/"
+  endpoint = "https://${var.proxmox_host}:8006/"
   insecure = true
   ssh {
     agent = true
