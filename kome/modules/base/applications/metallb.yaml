@@ -16,6 +16,7 @@ spec:
     repoURL: https://github.com/matthieurobert/homelab.git
     targetRevision: main
   syncPolicy:
+    automated: {}
     syncOptions:
     - FailOnSharedResource=true
     - CreateNamespace=true
