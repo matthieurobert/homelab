@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+  namespace: argocd
+spec:
+  destination:
+    namespace: nextcloud
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - repoURL: https://nextcloud.github.io/helm
+    chart: nextcloud
+    targetRevision: 8.7.0
+    helm:
+      valuesObject:
+        ingress:
+          enabled: true
+          className: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+          tls:
+            - secretName: nextcloud.kome.mrobert.fr-tls
+              hosts:
+                - nextcloud.kome.mrobert.fr
+        nextcloud:
+          host: nextcloud.kome.mrobert.fr
+        externalDatabase:
+          enabled: true
+          type: postgresql
+          host: nextcloud-cluster-rw
+          database: nextcloud
+          existingSecret: 
+            enabled: true
+            name: nextcloud-cluster-app
+            usernameKey: username
+            passwordKey: password
+        persistence:
+          enabled: true
+          size: 10Gi
+  - path: kome/deploy/manifests/nextcloud
+    repoURL: https://github.com/matthieurobert/homelab.git
+    targetRevision: main         
+  syncPolicy:
+    # automated: {}s
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
