@@ -18,17 +18,17 @@ spec:
       valuesObject:
         grafana:
           enabled: false
-          # forceDeployDatasource: true
-        # defaultDashboards:
-        #   grafanaOperator:
-        #     enabled: true
-        #     spec:
-        #       allowCrossNamespaceImport: true
-        # defaultDatasources:
-        #   grafanaOperator:
-        #     enabled: true
-        #     spec:
-        #       allowCrossNamespaceImport: true
+          forceDeployDatasource: true
+        defaultDashboards:
+          grafanaOperator:
+            enabled: true
+            spec:
+              allowCrossNamespaceImport: true
+        defaultDatasources:
+          grafanaOperator:
+            enabled: true
+            spec:
+              allowCrossNamespaceImport: true
         kubeEtcd:
           enabled: false
         kubeScheduler:

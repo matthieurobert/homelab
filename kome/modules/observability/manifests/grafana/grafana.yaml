@@ -1,3 +1,84 @@
+# apiVersion: grafana.integreatly.org/v1beta1
+# kind: Grafana
+# metadata:
+#   name: grafana
+#   labels:
+#     dashboards: "grafana"
+# spec:
+#   config:
+#     auth:
+#       auto_login: "true"
+#       disable_login_form: "true"
+#       signout_redirect_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/logout
+#     auth.generic_oauth:
+#       allow_assign_grafana_admin: "true"
+#       allow_sign_up: "true"
+#       api_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/userinfo
+#       auth_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/auth
+#       auto_login: "true"
+#       client_id: grafana
+#       enabled: "true"
+#       name: SSO
+#       role_attribute_path: contains(roles[*], 'serverAdmin') && 'GrafanaAdmin' ||
+#         contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') &&
+#         'Editor' || 'Viewer'
+#       role_attribute_strict: "true"
+#       scopes: openid profile email
+#       token_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/token
+#     security:
+#       admin_user: admin
+#       disable_initial_admin_creation: "false"
+#       strict_transport_security: map[enabled:true secretName:grafana.kome.mrobert.fr-tls]
+#     server:
+#       domain: grafana.kome.mrobert.fr
+#       root_url: https://grafana.kome.mrobert.fr
+#   deployment:
+#     spec:
+#       replicas: 1
+#       template:
+#         spec:
+#           securityContext:
+#             runAsUser: 472
+#             runAsGroup: 1000
+#             fsGroup: 1000
+#           containers:
+#           - envFrom:
+#             - secretRef:
+#                 name: grafana-oidc-client-secret
+#             image: grafana/grafana:12.1
+#             name: grafana
+#           volumes:
+#           - name: grafana-data
+#             persistentVolumeClaim:
+#               claimName: grafana-pvc
+#   ingress:
+#     metadata:
+#       annotations:
+#         cert-manager.io/cluster-issuer: letsencrypt-prod
+#     spec:
+#       ingressClassName: nginx
+#       rules:
+#       - host: grafana.kome.mrobert.fr
+#         http:
+#           paths:
+#           - backend:
+#               service:
+#                 name: grafana-service
+#                 port:
+#                   number: 3000
+#             path: /
+#             pathType: Prefix
+#       tls:
+#       - hosts:
+#         - grafana.kome.mrobert.fr
+#         secretName: grafana.kome.mrobert.fr-tls
+#   persistentVolumeClaim:
+#     spec:
+#       accessModes:
+#       - ReadWriteOnce
+#       resources:
+#         requests:
+#           storage: 1Gi
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
 metadata:
@@ -6,51 +87,13 @@ metadata:
     dashboards: "grafana"
 spec:
   config:
+    log:
+      mode: "console"
     auth:
-      auto_login: "true"
-      disable_login_form: "true"
-      signout_redirect_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/logout
-    auth.generic_oauth:
-      allow_assign_grafana_admin: "true"
-      allow_sign_up: "true"
-      api_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/userinfo
-      auth_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/auth
-      auto_login: "true"
-      client_id: grafana
-      enabled: "true"
-      name: SSO
-      role_attribute_path: contains(roles[*], 'serverAdmin') && 'GrafanaAdmin' ||
-        contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') &&
-        'Editor' || 'Viewer'
-      role_attribute_strict: "true"
-      scopes: openid profile email
-      token_url: https://keycloak.kome.mrobert.fr/realms/Talab/protocol/openid-connect/token
+      disable_login_form: "false"
     security:
-      admin_user: admin
-      disable_initial_admin_creation: "false"
-      strict_transport_security: map[enabled:true secretName:grafana.kome.mrobert.fr-tls]
-    server:
-      domain: grafana.kome.mrobert.fr
-      root_url: https://grafana.kome.mrobert.fr
-  deployment:
-    spec:
-      replicas: 1
-      template:
-        spec:
-          securityContext:
-            runAsUser: 472
-            runAsGroup: 1000
-            fsGroup: 1000
-          containers:
-          - envFrom:
-            - secretRef:
-                name: grafana-oidc-client-secret
-            image: grafana/grafana:12.1
-            name: grafana
-          volumes:
-          - name: grafana-data
-            persistentVolumeClaim:
-              claimName: grafana-pvc
+      admin_user: root
+      admin_password: secret
   ingress:
     metadata:
       annotations:
@@ -58,24 +101,17 @@ spec:
     spec:
       ingressClassName: nginx
       rules:
-      - host: grafana.kome.mrobert.fr
-        http:
-          paths:
-          - backend:
-              service:
-                name: grafana-service
-                port:
-                  number: 3000
-            path: /
-            pathType: Prefix
+        - host: grafana.kome.mrobert.fr
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: grafana-service
+                    port:
+                      number: 3000
+                path: /
+                pathType: Prefix
       tls:
-      - hosts:
-        - grafana.kome.mrobert.fr
-        secretName: grafana.kome.mrobert.fr-tls
-  persistentVolumeClaim:
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
+        - hosts:
+            - grafana.kome.mrobert.fr
+          secretName: grafana.kome.mrobert.fr-tls
